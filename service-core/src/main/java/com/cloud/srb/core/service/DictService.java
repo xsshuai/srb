@@ -1,9 +1,11 @@
 package com.cloud.srb.core.service;
 
+import com.cloud.srb.core.pojo.dto.ExcelDictDTO;
 import com.cloud.srb.core.pojo.entity.Dict;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +18,7 @@ import java.io.InputStream;
 public interface DictService extends IService<Dict> {
 
     void importData(InputStream inputStream);
+    List<Dict> listByParentId(Long parentId);
+
+    List<ExcelDictDTO> listDictData();
 }
