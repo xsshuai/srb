@@ -3,13 +3,7 @@
 <mapper namespace="com.cloud.srb.core.mapper.DictMapper">
 
     <insert id="insertBatch">
-        insert into dict (
-        id ,
-        parent_id ,
-        name ,
-        value ,
-        dict_code
-        ) values
+        insert into dict (id ,parent_id ,name ,value ,dict_code) values
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.id} ,
@@ -20,4 +14,7 @@
             )
         </foreach>
     </insert>
+    <select id="listByParentId" resultType="com.cloud.srb.core.pojo.entity.Dict">
+        select id,name ,value ,dict_code from dict where parent_id = #{parentId}
+    </select>
 </mapper>

@@ -41,11 +41,6 @@ public class AdminIntegralGradeController {
     @ApiOperation("积分等级列表")
     @GetMapping("/list")
     public Result listAll() {
-
-        log.info("this is info log");
-        log.warn("this is warn log");
-        log.error("this is error log");
-        log.debug("this is debug log");
         List<IntegralGrade> integralGrades = integralGradeService.list();
         return Result.sucess().data("integralGrades",integralGrades).message("获取列表成功");
     }
