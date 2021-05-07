@@ -51,7 +51,7 @@ public class ApiSmsController {
         String code = RandomUtils.getSixBitRandom();
         HashMap<String, Object> map = new HashMap<>();
         map.put("code",code);
-        smsService.send(mobile, SmsProperties.TEMPLATE_CODE, map);
+        //smsService.send(mobile, SmsProperties.TEMPLATE_CODE, map);
 
         //将验证码存入redis
         redisTemplate.opsForValue().set("srb:sms:code:" + mobile, code, 5, TimeUnit.MINUTES);
