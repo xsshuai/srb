@@ -33,7 +33,7 @@ import java.util.List;
 @RestController
 @RequestMapping("admin/core/dict")
 @Slf4j
-@CrossOrigin
+//@CrossOrigin
 public class AdminDictController {
 
     @Resource
@@ -54,7 +54,7 @@ public class AdminDictController {
     }
 
     @ApiOperation("数据字典批量导出到excel")
-    @GetMapping("export")
+    @GetMapping("/export")
     public void export(HttpServletResponse response) throws IOException {
         // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

@@ -1,7 +1,10 @@
 package com.cloud.srb.core.service;
 
-import com.cloud.srb.core.pojo.entity.LendItemReturn;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cloud.srb.core.pojo.entity.LendItemReturn;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface LendItemReturnService extends IService<LendItemReturn> {
 
+    List<LendItemReturn> selectByLendId(Long lendId, Long userId);
+    List<LendItemReturn> selectByLendReturnId(Long lendReturnId);
+    List<Map<String, Object>> addReturnDetail(Long lendReturnId);
 }

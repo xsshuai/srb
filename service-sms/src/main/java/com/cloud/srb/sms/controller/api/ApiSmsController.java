@@ -5,6 +5,7 @@ import com.cloud.common.result.ResponseEnum;
 import com.cloud.common.result.Result;
 import com.cloud.common.util.RandomUtils;
 import com.cloud.common.util.RegexValidateUtils;
+import com.cloud.srb.sms.client.CoreUserInfoClient;
 import com.cloud.srb.sms.service.SmsService;
 import com.cloud.srb.sms.util.SmsProperties;
 import io.swagger.annotations.Api;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/api/sms")
 @Api(tags = "短信管理")
-@CrossOrigin
+//@CrossOrigin
 @Slf4j
 public class ApiSmsController {
 
@@ -35,6 +37,9 @@ public class ApiSmsController {
 
     @Resource
     private RedisTemplate redisTemplate;
+
+    @Resource
+    private CoreUserInfoClient coreUserInfoClient;
 
     @ApiOperation("获取验证码")
     @GetMapping("/send/{mobile}")
@@ -47,6 +52,10 @@ public class ApiSmsController {
 
         //校验手机号码的合法性
         Assert.isTrue(RegexValidateUtils.checkCellphone(mobile),ResponseEnum.MOBILE_ERROR);
+
+        //判断手机号码是否注册
+        boolean result = coreUserInfoClient.checkMobile(mobile);
+        Assert.isTrue(result == false, ResponseEnum.MOBILE_EXIST_ERROR);
 
         String code = RandomUtils.getSixBitRandom();
         HashMap<String, Object> map = new HashMap<>();

@@ -33,19 +33,19 @@ public class UtilExceptionHander {
 
     @ExceptionHandler(value = Exception.class)
     public Result handleException(Exception e) {
-        log.info(e.getMessage(),e);
+        log.error(e.getMessage(),e);
         return Result.error();
     }
 
     @ExceptionHandler(value = BadSqlGrammarException.class)
     public Result handleException(BadSqlGrammarException e) {
-        log.info(e.getMessage(),e);
+        log.error(e.getMessage(),e);
         return Result.setResult(ResponseEnum.BAD_SQL_GRAMMAR_ERROR);
     }
 
     @ExceptionHandler(value = BusinessException.class)
     public Result handleException(BusinessException e) {
-        log.info(e.getMessage(),e);
+        log.error(e.getMessage(),e);
         return Result.error().message(e.getMessage()).code(e.getCode());
     }
 

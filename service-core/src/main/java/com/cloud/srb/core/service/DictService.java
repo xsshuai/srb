@@ -18,7 +18,12 @@ import java.util.List;
 public interface DictService extends IService<Dict> {
 
     void importData(InputStream inputStream);
+
     List<Dict> listByParentId(Long parentId);
 
     List<ExcelDictDTO> listDictData();
+
+    List<Dict> findByDictCode(String dictCode);
+
+    String getNameByParentDictCodeAndValue(String dictCode, Integer value);
 }

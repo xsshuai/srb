@@ -5,7 +5,10 @@ import com.cloud.common.exception.Assert;
 import com.cloud.common.result.ResponseEnum;
 import com.cloud.common.result.Result;
 import com.cloud.common.util.RegexValidateUtils;
+import com.cloud.srb.base.util.JwtUtils;
+import com.cloud.srb.core.pojo.vo.LoginVO;
 import com.cloud.srb.core.pojo.vo.RegisterVO;
+import com.cloud.srb.core.pojo.vo.UserInfoVO;
 import com.cloud.srb.core.service.UserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -28,7 +32,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/api/core/userInfo")
 @Slf4j
-@CrossOrigin
+//@CrossOrigin
 public class UserInfoController {
 
     @Resource
@@ -50,7 +54,7 @@ public class UserInfoController {
         Assert.notEmpty(password, ResponseEnum.PASSWORD_NULL_ERROR);
         Assert.notEmpty(code, ResponseEnum.CODE_NULL_ERROR);
 
-        Assert.isTrue(RegexValidateUtils.checkTelephone(mobile), ResponseEnum.MOBILE_ERROR);
+        Assert.isTrue(RegexValidateUtils.checkCellphone(mobile), ResponseEnum.MOBILE_ERROR);
         //校验验证码
         String codeGen = (String) redisTemplate.opsForValue().get("srb:sms:code:" + mobile);
         Assert.equals(code, codeGen, ResponseEnum.CODE_ERROR);
@@ -58,6 +62,46 @@ public class UserInfoController {
         //注册
         userInfoService.register(registerVO);
         return Result.sucess().message("注册成功！");
+    }
+
+    @ApiOperation(value = "用户登录")
+    @PostMapping("/login")
+    public Result login(
+            @ApiParam(value = "用户登录对象", required = true)
+            @RequestBody LoginVO loginVO,
+            HttpServletRequest request) {
+        String mobile = loginVO.getMobile();
+        String password = loginVO.getPassword();
+
+        //校验是否为空
+        Assert.notEmpty(mobile, ResponseEnum.MOBILE_NULL_ERROR);
+        Assert.notEmpty(password, ResponseEnum.PASSWORD_NULL_ERROR);
+
+        String ip = request.getRemoteAddr();
+
+        UserInfoVO userInfoVO = userInfoService.login(loginVO, ip);
+
+        return Result.sucess().data("userInfo", userInfoVO);
+    }
+
+    @ApiOperation("令牌校验")
+    @GetMapping("/checkToken")
+    public Result checkToken(HttpServletRequest request) {
+
+        String token = request.getHeader("token");
+        boolean result = JwtUtils.checkToken(token);
+
+        if (result) {
+            return Result.sucess().message("令牌校验成功！");
+        } else {
+            return Result.setResult(ResponseEnum.LOGIN_AUTH_ERROR);
+        }
+    }
+
+    @ApiOperation("手机号码是否注册校验")
+    @GetMapping("/checkMobile/{mobile}")
+    public boolean checkMobile(@PathVariable String mobile) {
+        return userInfoService.checkMobile(mobile);
     }
 }
 

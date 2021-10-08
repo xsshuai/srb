@@ -2,6 +2,7 @@ package com.cloud.srb.sms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @Author xsshuai
  * @Date 2021/5/4 11:52 上午
  **/
+@EnableFeignClients
 @SpringBootApplication
 @ComponentScan({"com.cloud.srb","com.cloud.common"})
 public class ServiceSmsApplication {
